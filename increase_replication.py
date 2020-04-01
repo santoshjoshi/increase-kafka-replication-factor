@@ -7,7 +7,6 @@ kafkadir = ''
 logfile = ''
 
 def verify_replicas(filename):
-    #subprocess.call('unset JMX_PORT', shell=True)
 
     command_list = [
         kafkadir+"/bin/kafka-reassign-partitions.sh",
@@ -40,7 +39,6 @@ def add_replicas(filename):
     return output
 
 def get_raw_current_config(topic):
-    #subprocess.call('unset JMX_PORT', shell=True)
     output = subprocess.check_output(
         [kafkadir+'/bin/kafka-topics.sh', '--describe', '--zookeeper', zkhosts, '--topic', topic])
 
@@ -81,7 +79,7 @@ def get_existing_topic_config(topicname):
                         ] = split_config_string[1]
                     else:
                         raise KeyError('Topic name not found')
-        else:  # this is for each partition
+        else:  
             line_split = line.split()
             line_split_filtered = filter(lambda x: ':' not in x, line_split)
             if line_split_filtered[0] not in topics.keys():
@@ -106,11 +104,11 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv, "hk:zk:t:ops:b:f", ["kafka=","zookeeper=", "topic=", "operation=", "brokers=", "replicafile="])
     except getopt.GetoptError:
-        print 'test.py -i -k <kafka> -z <zookeeper> -t <topicname> -o <operation>'
+        print 'increase_replication.py -i -k <kafka> -z <zookeeper> -t <topicname> -o <operation>'
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print 'test.py -zk zookeeper -t topicname '
+            print 'increase_replication.py -zk zookeeper -t topicname '
             sys.exit()
         elif opt in ("-zk", "--kafka"):
             kafkapath = arg
@@ -121,10 +119,10 @@ def main(argv):
         elif opt in ("-t", "--topic"):
             topicname = arg
 
-    print 'Kafka installation directory is ', kafkapath
-    print 'Zookeeper connection string is ', zkdetails
-    print 'Topic name is ', topicname
-    print 'Operation to perform ', operation
+    print 'Kafka installation directory ', kafkapath
+    print 'Zookeeper connection string ', zkdetails
+    print 'Topic name ', topicname
+    print 'Operation ', operation
 
     logfile.write("Topic name is {}\n".format(topicname))
     logfile.write("Operation is {}\n".format(operation))
